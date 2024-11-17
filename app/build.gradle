@@ -15,9 +15,51 @@ repositories {
     mavenCentral()
 }
 
+ext{
+    //reduce the boilerplate code
+    lombokVersion = '1.18.30'
+}
+
 dependencies {
     // Use JUnit test framework.
     testImplementation libs.junit
+
+    //helps build restful web services
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.3.5'
+    //monitoring and managing the application
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.3.5'
+    //helps in externalized configuration
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.1.4'
+
+    //working with databases
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.5'
+    //rest endpoints for oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.3.5'
+    //adds authentication and authorization
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.3.5'
+
+    //automates the mapping between model objects and JSON using DTO
+    implementation 'org.modelmapper:modelmapper:3.2.0'
+    //provides jdbc
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
+
+    //lombok
+    implementation group: 'org.projectlombok', name:'lombok', version: "$lombokVersion"
+    compileOnly group: 'org.projectlombok', name:'lombok', version: "$lombokVersion"
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: "$lombokVersion"
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: "$lombokVersion"
+    testImplementation group: 'org.projectlombok', name: 'lombok', version: "$lombokVersion"
+
+    //for creating and parsing jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    //signing and verifying jwt
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    //serialization and deserialization of jwt
+    //convert java to json and vice versa
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // Use Spring Boot starter for building web applications.
+    implementation 'org.springframework.boot:spring-boot-starter'
 
     // This dependency is used by the application.
     implementation libs.guava
