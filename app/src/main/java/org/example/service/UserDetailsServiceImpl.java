@@ -2,8 +2,10 @@ package org.example.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.checkerframework.checker.units.qual.A;
 import org.example.entities.UserInfo;
+//import org.example.eventProducer.UserInfoProducer;
+import org.example.eventProducer.UserInfoEvent;
+import org.example.eventProducer.UserInfoProducer;
 import org.example.model.UserInfoDto;
 import org.example.repository.UserRepository;
 import org.example.utils.ValidationUtil;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -29,6 +32,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private final UserInfoProducer userInfoProducer;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserInfo user=userRepository.findByUsername(username);
@@ -39,7 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UserInfo checkIfUserAlreadyExist(UserInfoDto userInfoDto){
-        return userRepository.findByUsername(userInfoDto.getUserName());
+        return userRepository.findByUsername(userInfoDto.getUsername());
     }
 
     public String signupUser(UserInfoDto userInfoDto){
@@ -49,7 +55,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return null;
 
         String userId= UUID.randomUUID().toString();
-        userRepository.save(new UserInfo(userId, userInfoDto.getUserName(), userInfoDto.getPassword(), new HashSet<>()));
+        UserInfo userInfo = new UserInfo(userId, userInfoDto.getUsername(), userInfoDto.getPassword(), new HashSet<>());
+        userRepository.save(userInfo);
+        userInfoProducer.sendEventToKafka(userInfoEventToPublish(userInfoDto, userId));
         return userId;
+    }
+
+    public String getUserByUsername(String userName){
+        return Optional.of(userRepository.findByUsername(userName)).map(UserInfo::getUserId).orElse(null);
+    }
+
+    private UserInfoEvent userInfoEventToPublish(UserInfoDto userInfoDto, String userId){
+        return UserInfoEvent.builder()
+                .userId(userId)
+                .firstName(userInfoDto.getUsername())
+                .lastName(userInfoDto.getLastName())
+                .email(userInfoDto.getEmail())
+                .phoneNumber(userInfoDto.getPhoneNumber()).build();
+
     }
 }

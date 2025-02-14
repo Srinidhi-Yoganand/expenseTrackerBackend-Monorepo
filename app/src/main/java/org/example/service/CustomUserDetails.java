@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/*
+Being used for constructor to set username, password, list of roles
+*/
 public class CustomUserDetails extends UserInfo implements UserDetails {
 
     private String username;

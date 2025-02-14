@@ -16,8 +16,19 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+    /*
+    JWT-> header, payload, signature
 
+    header->metadata about JWT
+    payload-> claims, standard->issuer, user, expiration; public->roles, permissions;
+    private->preferences, custom data
+    */
+
+    //using hmac, need to share with everyone who needs it to verify jwt
+    //else we can use something rsa which uses public and private key, so no need to share
     public static final String SECRET = "357638792F423F4428472B4B6250655368566D597133743677397A2443264629";
+
+    //Claims->Claims.getSubject(); equivalent
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -50,7 +61,13 @@ public class JwtService {
         creates a jwt parser, sets a signing key to verify and completes the construction
         (builder pattern is used to create chaining, used instead of a large constructor)
         Parses jwt and verifies the signature, extracts the claims and returns as Claim object
+
+        Signature being used to check if tampered with
      */
+    /*
+    User u=new User("a", "b)
+    User.userName("a").password("b").build()->chaining
+    */
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
