@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.example.auth.JwtAuthFilter;
@@ -48,17 +49,31 @@ public class SecurityConfig {
     @Bean
     @Primary
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable).cors(CorsConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup", "/health").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
+        System.out.println("Setting up HTTP Security Configuration...");
+
+        http
+                .csrf(csrf -> {
+                    System.out.println("Disabling CSRF...");
+                    csrf.disable();
+                })
+                .cors(cors -> {
+                    System.out.println("Disabling CORS...");
+                    cors.disable();
+                })
+                .authorizeRequests(authz -> {
+                    System.out.println("Configuring request authorization...");
+                    authz
+                            .requestMatchers("/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup", "/health").permitAll();// All other requests require authentication
+                })
+                .sessionManagement(session -> {
+                    System.out.println("Setting session management to stateless...");
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                })
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .authenticationProvider(authenticationProvider())
-                .build();
+                .authenticationProvider(authenticationProvider());
+
+        System.out.println("Security Filter Chain has been set up.");
+        return http.build();
     }
 
     @Bean

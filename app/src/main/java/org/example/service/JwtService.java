@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,11 +94,12 @@ public class JwtService {
     }
 
     private String createToken(Map<String, Object> claims, String username){
+        Instant expirationTime = Instant.now().plusSeconds(3600);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+100000*60*1))
+                .setExpiration(Date.from(expirationTime))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
                 //token signing key and algorithm, compact the jwt to string
     }
