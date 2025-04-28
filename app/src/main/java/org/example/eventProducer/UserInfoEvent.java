@@ -22,4 +22,8 @@ public class UserInfoEvent {
     private Long phoneNumber;
 
     private String userId;
+
+    public UserEventDto toDto() {
+        return new UserEventDto(this.firstName, this.lastName, this.email, this.phoneNumber, this.userId);
+    }
 }

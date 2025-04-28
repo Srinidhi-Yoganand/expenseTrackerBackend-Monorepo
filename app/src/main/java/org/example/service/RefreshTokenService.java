@@ -25,20 +25,20 @@ public class RefreshTokenService {
         UserInfo user=userRepository.findByUsername(username);
 
         Instant nowUtc = Instant.now();
-        System.out.println("Current UTC time: " + nowUtc);
+//        System.out.println("Current UTC time: " + nowUtc);
 
         Instant expiryDate = nowUtc.plusSeconds(604800); // 7 days
-        System.out.println("Token will expire at: " + expiryDate);
+//        System.out.println("Token will expire at: " + expiryDate);
 
         RefreshToken existingToken = refreshTokenRepository.findByUserInfo(user);
-        System.out.println("Existing token: " + existingToken);
+//        System.out.println("Existing token: " + existingToken);
 
         if (existingToken != null) {
             if (existingToken.getExpiryDate().isBefore(nowUtc)) {
-                System.out.println("Existing refresh token expired. Deleting the old token.");
+//                System.out.println("Existing refresh token expired. Deleting the old token.");
                 refreshTokenRepository.delete(existingToken);
             } else {
-                System.out.println("Existing refresh token is still valid.");
+//                System.out.println("Existing refresh token is still valid.");
                 return existingToken;
             }
         }

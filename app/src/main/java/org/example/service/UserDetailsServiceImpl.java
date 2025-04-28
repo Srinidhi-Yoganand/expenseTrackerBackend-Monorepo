@@ -9,6 +9,8 @@ import org.example.eventProducer.UserInfoProducer;
 import org.example.model.UserInfoDto;
 import org.example.repository.UserRepository;
 import org.example.utils.ValidationUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +28,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    public static final Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
     @Autowired
     private final UserRepository userRepository;
 
@@ -57,7 +60,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         String userId= UUID.randomUUID().toString();
         UserInfo userInfo = new UserInfo(userId, userInfoDto.getUsername(), userInfoDto.getPassword(), new HashSet<>());
         userRepository.save(userInfo);
-//        userInfoProducer.sendEventToKafka(userInfoEventToPublish(userInfoDto, userId));
+        System.out.println("Printing user obtained details: " + userInfoDto.toString());
+        userInfoProducer.sendEventToKafka(userInfoEventToPublish(userInfoDto, userId));
         return userId;
     }
 
@@ -66,12 +70,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private UserInfoEvent userInfoEventToPublish(UserInfoDto userInfoDto, String userId){
-        return UserInfoEvent.builder()
-                .userId(userId)
-                .firstName(userInfoDto.getUsername())
+        UserInfoEvent userInfoEvent = UserInfoEvent.builder()
+                .firstName(userInfoDto.getFirstName())
                 .lastName(userInfoDto.getLastName())
                 .email(userInfoDto.getEmail())
-                .phoneNumber(userInfoDto.getPhoneNumber()).build();
+                .phoneNumber(userInfoDto.getPhoneNumber())
+                .userId(userId)
+                .build();
 
+//        System.out.println("UserInfoEvent to publish: " + userInfoEvent.toString());
+
+        return userInfoEvent;
     }
 }

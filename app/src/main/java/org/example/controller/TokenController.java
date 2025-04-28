@@ -63,29 +63,29 @@ public class TokenController {
     @PostMapping("auth/v1/refreshToken")
     public ResponseEntity<JwtResponseDTO> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
         String refreshToken = refreshTokenRequestDTO.getToken();
-        System.out.println("Received refresh token: " + refreshToken);
+//        System.out.println("Received refresh token: " + refreshToken);
 
         Optional<RefreshToken> optionalRefreshToken = refreshTokenService.findByToken(refreshToken);
 
         if (optionalRefreshToken.isPresent()) {
-            System.out.println("Found refresh token in DB.");
+//            System.out.println("Found refresh token in DB.");
 
             RefreshToken refreshTokenEntity = optionalRefreshToken.get();
 
             try {
                 refreshTokenService.verifyExpiration(refreshTokenEntity);
-                System.out.println("Refresh token is valid and not expired.");
+//                System.out.println("Refresh token is valid and not expired.");
             } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
                 throw e; // Handle expired refresh token error
             }
 
             UserInfo userInfo = refreshTokenEntity.getUserInfo();
-            System.out.println("User info retrieved for username: " + userInfo.getUsername());
+//            System.out.println("User info retrieved for username: " + userInfo.getUsername());
 
             String accessToken = jwtService.generateToken(userInfo.getUsername());
-            System.out.println("Generated new access token for user: " + userInfo.getUsername());
-            System.out.println("Access token: " + accessToken);
+//            System.out.println("Generated new access token for user: " + userInfo.getUsername());
+//            System.out.println("Access token: " + accessToken);
 
             return ResponseEntity.ok(JwtResponseDTO.builder()
                     .accessToken(accessToken)
@@ -93,7 +93,7 @@ public class TokenController {
                     .userId(userInfo.getUserId())
                     .build());
         } else {
-            System.out.println("Refresh token not found in DB.");
+//            System.out.println("Refresh token not found in DB.");
             throw new RuntimeException("Refresh Token is not in DB..!!");
         }
     }

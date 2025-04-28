@@ -3,6 +3,7 @@ package org.example.controller;
 import lombok.AllArgsConstructor;
 import org.checkerframework.checker.units.qual.A;
 import org.example.entities.RefreshToken;
+import org.example.entities.UserInfo;
 import org.example.model.UserInfoDto;
 import org.example.response.JwtResponseDTO;
 import org.example.service.JwtService;
@@ -35,12 +36,18 @@ public class AuthController {
     @PostMapping("auth/v1/signup")
     public ResponseEntity SignUp(@RequestBody UserInfoDto userInfoDto){
         try{
+            System.out.println("Signing Up!!!");
+            System.out.println("User Info: " + userInfoDto.toString());
+
             String user = userDetailsService.signupUser(userInfoDto);
+//            System.out.println("User ID: " + user);
 //            if(Boolean.FALSE.equals(isSignUpped)){
 //                return new ResponseEntity<>("Already Exist", HttpStatus.BAD_REQUEST);
 //            }
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userInfoDto.getUsername());
+//            System.out.println("Refresh Token: " + refreshToken.getToken());
             String jwtToken = jwtService.generateToken(userInfoDto.getUsername());
+//            System.out.println("JWT Token: " + jwtToken);
             return new ResponseEntity<>(JwtResponseDTO.builder().accessToken(jwtToken).
                     token(refreshToken.getToken()).userId(user).build(), HttpStatus.OK);
         }catch (Exception ex){
