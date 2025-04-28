@@ -8,7 +8,7 @@ from django.http import JsonResponse
 class UserView(APIView):
   
   def get(self, request):
-    user_id = request.data.get("user_id")
+    user_id = request.query_params.get("user_id")
     try:
       user = UserInfo.objects.get(user_id=user_id)
       serializer = UserInfoSerializer(user)
