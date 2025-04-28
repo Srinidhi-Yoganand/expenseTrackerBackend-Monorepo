@@ -17,7 +17,11 @@ public class ExpenseConsumer {
         this.expenseService = expenseService;
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic-json.name}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(
+            topics = "${spring.kafka.topic-json.name}",
+            groupId = "${spring.kafka.consumer.group-id}",
+            autoStartup = "${spring.kafka.consumer.enabled:true}"
+    )
     public void listen(ExpenseDto eventData){
         try{
             expenseService.createExpense(eventData);
