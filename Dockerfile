@@ -1,10 +1,10 @@
-FROM amazoncorretto:21
+FROM openjdk:21-jdk-slim
 LABEL authors="srinidhi"
 
 WORKDIR /app
 
-COPY app/build/libs/app.jar /app/app.jar
+COPY app/build/libs/app.jar /app/authService.jar
 
 EXPOSE 9898
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/authService.jar"]
