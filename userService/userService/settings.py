@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'userService.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv("MYSQL_DB", "userservice"),
-        'USER': os.getenv("MYSQL_USER", "root"),
-        'PASSWORD': os.getenv("MYSQL_PASSWORD", "password"),
-        'HOST': os.getenv("MYSQL_HOST", "localhost"),
-        'PORT': os.getenv("MYSQL_PORT", "3306"),
+        'NAME': 'userservice',
+        'USER': 'user',
+        'PASSWORD': 'userpassword',
+        'HOST': 'mysql', 
+        'PORT': '3306',
     }
 }
 
