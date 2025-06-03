@@ -1,0 +1,91 @@
+plugins {
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+
+    // Optional: Add Spring repositories to get compatible versions.
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/release' }
+}
+
+ext {
+    // Reduce the boilerplate code
+    lombokVersion = '1.18.30'
+}
+
+dependencies {
+    // Spring Boot starter for building RESTful web services
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.4.2'
+
+    // Spring Boot Actuator for monitoring and managing the application
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:3.3.5'
+
+    // Spring Cloud starter for externalized configuration
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:4.1.4'
+
+    // Spring Data JPA for working with databases
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.5'
+
+    // OAuth2 Resource Server for handling authentication and authorization
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.0.0'  // Updated version
+
+    // Spring Security for adding authentication and authorization
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.4.2'
+
+    // Spring Kafka for working with Kafka messaging
+    implementation 'org.springframework.kafka:spring-kafka:3.1.0'  // Updated version
+
+    // ModelMapper for converting between model objects and DTOs
+    implementation 'org.modelmapper:modelmapper:3.2.0'
+
+    // MySQL Connector for JDBC connection
+    implementation 'mysql:mysql-connector-java:8.0.30'  // Updated version
+
+    // Lombok for reducing boilerplate code in Java
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testImplementation "org.projectlombok:lombok:${lombokVersion}"
+
+    // JJWT for creating and parsing JWT tokens
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // Spring Boot starter for general Spring Boot functionality
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // Google Guava for additional utility functions
+    implementation 'com.google.guava:guava:31.0-jre'  // Added Guava dependency
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'org.example.App'
+}
+
+tasks.test {
+    enabled = false
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.example.App'
+        )
+    }
+}
